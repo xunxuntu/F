@@ -39,7 +39,7 @@ class ConvBNReLU(nn.Sequential):
 
 class InvertedResidual(nn.Module):
     """
-        到残差结构
+        倒残差结构
     """
     def __init__(self, in_channel, out_channel, stride, expand_ratio):
         """
