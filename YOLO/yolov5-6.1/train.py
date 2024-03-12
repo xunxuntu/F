@@ -497,12 +497,21 @@ def parse_opt(known=False):
 
 
 def main(opt, callbacks=Callbacks()):
+    '''
+    2.1  检查分布式训练环境
+    '''
     # Checks
     if RANK in [-1, 0]:
+        # 输出所有训练参数 / 参数以彩色的方式表现
         print_args(FILE.stem, opt)
+        # 检测YOLO v5的github仓库是否更新，若已更新，给出提示
         check_git_status()
+        # 检查requirements.txt所需包是否都满足
         check_requirements(exclude=['thop'])
 
+    '''
+    2.2  判断是否断点续训
+    '''
     # Resume
     if opt.resume and not check_wandb_resume(opt) and not opt.evolve:  # resume an interrupted run
         ckpt = opt.resume if isinstance(opt.resume, str) else get_latest_run()  # specified or most recent path
@@ -521,8 +530,12 @@ def main(opt, callbacks=Callbacks()):
             opt.exist_ok, opt.resume = opt.resume, False  # pass resume to exist_ok and disable resume
         opt.save_dir = str(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))
 
-    # DDP mode
+    '''
+    2.3  判断是否分布式训练
+    '''
+    # DDP mode -->  支持多机多卡、分布式训练
     device = select_device(opt.device, batch_size=opt.batch_size)
+    # 当进程内的GPU编号不为-1时，才会进入DDP
     if LOCAL_RANK != -1:
         msg = 'is not compatible with YOLOv5 Multi-GPU DDP training'
         assert not opt.image_weights, f'--image-weights {msg}'
