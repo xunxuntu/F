@@ -12,7 +12,7 @@ class LeNet(nn.Module):
         self.pool2 = nn.MaxPool2d(2, 2)
         self.fc1 = nn.Linear(32*5*5, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)  # 最后输出是10个类别，因为使用的是cifar10数据集
+        self.fc3 = nn.Linear(84, 10)  # 最后输出是2个类别，因为使用的是 猫狗分类 数据集
 
     def forward(self, x):
         """
@@ -36,3 +36,4 @@ if __name__ == '__main__':
     print(model)
     output = model(input1)
     print(output)
+    print(output.shape)

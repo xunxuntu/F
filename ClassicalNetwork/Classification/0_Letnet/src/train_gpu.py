@@ -21,9 +21,9 @@ transform = transforms.Compose([transforms.ToTensor(),
                                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])  # 标准化:output=(input-mean)/std
 
 # 导入50000张训练图片
-train_set = torchvision.datasets.CIFAR10(root='../../my_datasets/CIFAR10',  # 数据集存放目录
+train_set = torchvision.datasets.CIFAR10(root='../../../../../Datasets/CIFAR10',  # 数据集存放目录
                                          train=True,  # 表示导入数据集中的训练集
-                                         download=False,  # 第一次运行时为True，下载数据集，下载完成后改为False
+                                         download=True,  # 第一次运行时为True，下载数据集，下载完成后改为False
                                          transform=transform)  # 图片预处理过程
 # torchvision.datasets. 后面有很多的数据集可以下载
 
@@ -34,7 +34,7 @@ train_loader = torch.utils.data.DataLoader(train_set,  # 导入的训练集
                                            num_workers=0)  # 载入数据使用的线程数，在windows下只能设置为0
 
 # 导入10000张测试图片
-test_set = torchvision.datasets.CIFAR10(root='../../my_datasets/CIFAR10',
+test_set = torchvision.datasets.CIFAR10(root='../../../../../Datasets/CIFAR10',
                                         train=False,  # 表示是数据集中的测试集
                                         download=False, transform=transform)
 
@@ -58,7 +58,7 @@ loss_function = nn.CrossEntropyLoss()  # 定义损失函数为交叉熵损失函
 
 optimizer = optim.Adam(net.parameters(), lr=0.001)  # 定义优化器（训练参数，学习率）111
 
-for epoch in range(5):  # 一个epoch即对整个训练集进行一次训练
+for epoch in range(50):  # 一个epoch即对整个训练集进行一次训练
     running_loss = 0.0  # 训练中的损失
     time_start = time.perf_counter()  # 返回当前的计算机系统时间
 
@@ -91,5 +91,5 @@ for epoch in range(5):  # 一个epoch即对整个训练集进行一次训练
 print('Finished Training')
 
 # 保存训练得到的参数
-save_path = '../workspace/Lenet_20230906.pth'
+save_path = '../workspace/Lenet_20240313.pth'
 torch.save(net.state_dict(), save_path)
