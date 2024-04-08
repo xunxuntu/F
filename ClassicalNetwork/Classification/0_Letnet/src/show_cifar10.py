@@ -14,7 +14,7 @@ transform = transforms.Compose([transforms.ToTensor(),
                                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])  # 标准化:output=(input-mean)/std
 
 # 导入10000张测试图片
-test_set = torchvision.datasets.CIFAR10(root='../../my_datasets/CIFAR10',
+test_set = torchvision.datasets.CIFAR10(root='../../datasets',
                                         train=False,  # 表示是数据集中的测试集
                                         download=False, transform=transform)
 # 加载测试集

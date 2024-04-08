@@ -38,7 +38,7 @@ def main():
     # create model
     model = vgg(model_name="vgg16", num_classes=5).to(device)
     # load model weights
-    weights_path = "../workspace/vgg16_Net_20230906.pth"
+    weights_path = "../workspace/vgg16_Net_2024-04-07.pth"
     assert os.path.exists(weights_path), "file: '{}' dose not exist.".format(weights_path)
     model.load_state_dict(torch.load(weights_path, map_location=device), strict=False)
 

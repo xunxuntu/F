@@ -15,11 +15,12 @@ from model import AlexNet
 
 
 def main():
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
     print("using {} device.".format(device))
 
     data_transform = {
-        "train": transforms.Compose([transforms.RandomResizedCrop(224),
+        "train": transforms.Compose([transforms.RandomResizedCrop(224),  # 裁剪到224x224的大小
                                      transforms.RandomHorizontalFlip(),
                                      transforms.ToTensor(),
                                      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]),
@@ -28,14 +29,15 @@ def main():
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
     data_root = os.path.abspath(os.path.join(os.getcwd(), "../../"))  # get data root path
-    image_path = os.path.join(data_root, "my_datasets/FlowerPhotos")  # flower data set path
-    print(data_root)
-    print(image_path)
+    image_path = os.path.join(data_root, "datasets/flower_data")  # flower data set path
+    print(f'data_root: {data_root}')
+    print(f'image_path: {image_path}')
+
     assert os.path.exists(image_path), "{} path does not exist.".format(image_path)
     train_dataset = datasets.ImageFolder(root=os.path.join(image_path, "train"),
                                          transform=data_transform["train"])
     train_num = len(train_dataset)
-    # print(train_num)
+    print(f'train_num: {train_num}')
 
     flower_list = train_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in flower_list.items())  # {'daisy':0, 'dandelion':1, 'roses':2, 'sunflower':3, 'tulips':4}
@@ -45,7 +47,7 @@ def main():
         json_file.write(json_str)
 
     batch_size = 32
-    nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])  # number of workers
+    nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])  # number of workers:开启的线程数
     print('Using {} dataloader workers every process'.format(nw))
 
     train_loader = torch.utils.data.DataLoader(train_dataset,
@@ -59,26 +61,25 @@ def main():
                                                   batch_size=batch_size, shuffle=True,
                                                   num_workers=nw)
 
-    print("using {} images for training, {} images for validation.".format(train_num,
-                                                                           val_num))
+    print("using {} images for training, {} images for validation.".format(train_num, val_num))
 
     net = AlexNet(num_classes=5, init_weights=True)
 
     net.to(device)
     loss_function = nn.CrossEntropyLoss()
     # pata = list(net.parameters())  # 查看模型的参数
-    optimizer = optim.Adam(net.parameters(), lr=0.0002)
+    optimizer = optim.Adam(net.parameters(), lr=0.0002)  # 定义一个优化器
 
-    epochs = 10
-    save_path = '../AlexNet_2.pth'
+    epochs = 5
+    save_path = '../workspace/AlexNet_2024-04-07.pth'
     best_acc = 0.0  # 最佳准确率
     train_steps = len(train_loader)
     for epoch in range(epochs):
         # train
         net.train()  # 这个是用来启动 dropout 方法的
-        running_loss = 0.0
+        running_loss = 0.0  # 统计训练中的平均损失
         train_bar = tqdm(train_loader, file=sys.stdout)
-        t1 = time.perf_counter()
+        # t1 = time.perf_counter()
         for step, data in enumerate(train_bar):
             images, labels = data
             optimizer.zero_grad()
@@ -86,7 +87,7 @@ def main():
             loss = loss_function(outputs, labels.to(device))
             loss.backward()
             optimizer.step()
-
+ 
             # print statistics
             running_loss += loss.item()
 

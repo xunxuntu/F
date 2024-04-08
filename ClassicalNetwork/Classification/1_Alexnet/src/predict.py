@@ -10,7 +10,8 @@ from model import AlexNet
 
 
 def main():
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
 
     data_transform = transforms.Compose(
         [transforms.Resize((224, 224)),
@@ -27,7 +28,7 @@ def main():
     # [N, C, H, W]
     img = data_transform(img)
     # expand batch dimension
-    img = torch.unsqueeze(img, dim=0)
+    img = torch.unsqueeze(img, dim=0)  # 扩充 batch 维度
 
     # read class_indict
     json_path = './class_indices.json'
@@ -39,11 +40,11 @@ def main():
     model = AlexNet(num_classes=5).to(device)
 
     # load model weights
-    weights_path = "../AlexNet_20230906.pth"
+    weights_path = "../workspace/AlexNet_2024-04-07.pth"
     assert os.path.exists(weights_path), "file: '{}' dose not exist.".format(weights_path)
     model.load_state_dict(torch.load(weights_path))
 
-    model.eval()
+    model.eval()  # 关闭掉 dropout 方法
     with torch.no_grad():
         # predict class
         output = torch.squeeze(model(img.to(device))).cpu()

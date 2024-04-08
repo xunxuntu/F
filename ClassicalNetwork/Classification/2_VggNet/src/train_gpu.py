@@ -25,7 +25,7 @@ def main():
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
     data_root = os.path.abspath(os.path.join(os.getcwd(), "../../"))  # get data root path
-    image_path = os.path.join(data_root, "my_datasets/FlowerPhotos")  # flower data set path
+    image_path = os.path.join(data_root, "datasets/flower_data")  # flower data set path
     print(data_root)
     print(image_path)
 
@@ -68,9 +68,9 @@ def main():
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
-    epochs = 30
+    epochs = 10
     best_acc = 0.0
-    save_path = '../workspace/{}_Net_20230906.pth'.format(model_name)
+    save_path = '../workspace/{}_Net_2024-04-07.pth'.format(model_name)
     train_steps = len(train_loader)
     for epoch in range(epochs):
         # train

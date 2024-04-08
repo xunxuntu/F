@@ -62,6 +62,8 @@ def main():
     print("using {} images for training, {} images for validation.".format(train_num,
                                                                            val_num))
 
+    # 查看数据集图片代码
+    # 需要将 validate_loader 中的 batch_size 设置为一个小的数字，比如2,3,4,1，...，大了不好显示
     test_data_iter = iter(validate_loader)
     test_image, test_label = next(test_data_iter)
     

@@ -16,6 +16,7 @@ class LeNet(nn.Module):
 
     def forward(self, x):
         """
+            [batch, channel, height, width]
             实现正向传播过程
             N=(W-F+2P)/S+1
         """
@@ -26,7 +27,7 @@ class LeNet(nn.Module):
         x = x.view(-1, 32*5*5)       # output(32*5*5)
         x = F.relu(self.fc1(x))      # output(120)
         x = F.relu(self.fc2(x))      # output(84)
-        x = self.fc3(x)              # output(10)  输出的时候在内部实现了一个比softmax高级的层
+        x = self.fc3(x)              # output(10)  输出的时候在内部实现了一个比softmax更高级的层，将输出变成概率分布。
         return x
 
 
@@ -35,5 +36,5 @@ if __name__ == '__main__':
     model = LeNet()
     print(model)
     output = model(input1)
-    print(output)
+    # print(output)
     print(output.shape)
