@@ -1,11 +1,15 @@
 import torch
 import torchvision.transforms as transforms
 from PIL import Image
-
 from model import LeNet
+from pathlib import Path
 
 
 def main():
+    current_file_path = Path(__file__).resolve()  # 获取当前文件的绝对路径
+    tuc_path = current_file_path.parents[5]  # 获取项目根目录文件路径
+    model_path = tuc_path / "largeFiles" / "model_saved" 
+    # print(f'model_path: {model_path}')
 
     transform = transforms.Compose(
         [transforms.Resize((32, 32)),
@@ -17,7 +21,7 @@ def main():
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
     net = LeNet()
-    net.load_state_dict(torch.load('../workspace/Lenet_20240407.pth'))
+    net.load_state_dict(torch.load(model_path / "2024-04-11-Lenet.pth"))
 
     im = Image.open('../workspace/images/feiji.png').convert("RGB")  # 如果输入图像有一个 alpha 通道的像素，那么它是四通道而不是是三通道的图像，需要转为三通道
     im = transform(im)  # [C, H, W]

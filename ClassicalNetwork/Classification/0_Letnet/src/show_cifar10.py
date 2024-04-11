@@ -7,14 +7,18 @@ import torchvision
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 
+current_file_path = Path(__file__).resolve
+tuc_path = current_file_path.parents[5]
+datasets_path = tuc_path / "largeFiles" / "datasets"
 
 # 串联多个图片的变换操作
 transform = transforms.Compose([transforms.ToTensor(),
                                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])  # 标准化:output=(input-mean)/std
 
 # 导入10000张测试图片
-test_set = torchvision.datasets.CIFAR10(root='../../datasets',
+test_set = torchvision.datasets.CIFAR10(root=datasets_path / "cifar-10-batches-py",
                                         train=False,  # 表示是数据集中的测试集
                                         download=False, transform=transform)
 # 加载测试集

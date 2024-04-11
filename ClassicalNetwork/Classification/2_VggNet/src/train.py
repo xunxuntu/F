@@ -9,6 +9,11 @@ import torch.optim as optim
 from tqdm import tqdm
 
 from model import vgg
+from pathlib import Path
+
+current_file_path = Path(__file__).resolve()  # 获取当前文件的绝对路径
+tuc_path = current_file_path.parents[5]  # 获取项目根目录文件路径
+datasets_path = tuc_path / "largeFiles" / "datasets"  # 获取数据集路径
 
 
 def main():
@@ -24,13 +29,13 @@ def main():
                                    transforms.ToTensor(),
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
-    data_root = os.path.abspath(os.path.join(os.getcwd(), "../../"))  # get data root path
-    image_path = os.path.join(data_root, "datasets/flower_data")  # flower data set path
-    print(data_root)
-    print(image_path)
-
+    # data_root = os.path.abspath(os.path.join(os.getcwd(), "../../"))  # get data root path
+    # image_path = os.path.join(data_root, "datasets/flower_data")  # flower data set path
+    # print(data_root)
+    # print(image_path)
+    image_path = datasets_path / "flower_data"
     assert os.path.exists(image_path), "{} path does not exist.".format(image_path)
-    train_dataset = datasets.ImageFolder(root=os.path.join(image_path, "train"),
+    train_dataset = datasets.ImageFolder(root=image_path / "train",
                                          transform=data_transform["train"])
     train_num = len(train_dataset)
 
@@ -70,7 +75,9 @@ def main():
 
     epochs = 10
     best_acc = 0.0
-    save_path = '../workspace/{}_Net_2024-04-07.pth'.format(model_name)
+    model_save_path = tuc_path / "largeFiles" / "model_saved" # 获取模型保存路径
+    model_save_path.mkdir(parents=True, exist_ok=True)
+    model_path = model_save_path / "VggNet_2024-04-11.pth"
     train_steps = len(train_loader)
     for epoch in range(epochs):
         # train
@@ -109,7 +116,7 @@ def main():
 
         if val_accurate > best_acc:
             best_acc = val_accurate
-            torch.save(net.state_dict(), save_path)
+            torch.save(net.state_dict(), model_path)
 
     print('Finished Training')
 

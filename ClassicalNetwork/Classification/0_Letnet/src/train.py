@@ -12,9 +12,14 @@ import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+from pathlib import Path
 
-# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+current_file_path = Path(__file__).resolve()  # 获取当前文件的绝对路径
+tuc_path = current_file_path.parents[5]  # 获取项目根目录文件路径
+datasets_path = tuc_path / "largeFiles" / "datasets"  # 获取数据集路径
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cpu")
 print(device)
 
 # 对图像进行预处理的函数，串联多个图片的变换操作
@@ -22,7 +27,7 @@ transform = transforms.Compose([transforms.ToTensor(),
                                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])  # 标准化:output=(input-mean)/std
 
 # 导入50000张训练图片
-train_set = torchvision.datasets.CIFAR10(root='../../datasets',  # 数据集存放目录
+train_set = torchvision.datasets.CIFAR10(root=datasets_path,  # 数据集存放目录
                                          train=True,  # 表示导入数据集中的训练集
                                          download=False,  # 第一次运行时为True，下载数据集，下载完成后改为False
                                          transform=transform)  # 图片预处理过程
@@ -35,7 +40,7 @@ train_loader = torch.utils.data.DataLoader(train_set,  # 导入的训练集
                                            num_workers=0)  # 载入数据使用的线程数，在windows下只能设置为0
 
 # 导入10000张测试图片
-test_set = torchvision.datasets.CIFAR10(root='../../datasets',
+test_set = torchvision.datasets.CIFAR10(root=datasets_path,
                                         train=False,  # 表示是数据集中的测试集
                                         download=False, transform=transform)
 
@@ -92,5 +97,7 @@ for epoch in range(5):  # 一个epoch即对整个训练集进行一次训练
 print('Finished Training')
 
 # 保存训练得到的参数
-save_path = '../workspace/Lenet_20240407.pth'
-torch.save(net.state_dict(), save_path)
+model_save_path = tuc_path / "largeFiles" / "model_saved" # 获取模型保存路径
+model_save_path.mkdir(parents=True, exist_ok=True)
+model_path = model_save_path / "2024-04-11-Lenet.pth"
+torch.save(net.state_dict(), model_path)

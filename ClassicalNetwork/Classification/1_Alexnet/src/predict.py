@@ -5,13 +5,17 @@ import torch
 from PIL import Image
 from torchvision import transforms
 import matplotlib.pyplot as plt
-
 from model import AlexNet
+from pathlib import Path
 
 
 def main():
-    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    device = torch.device("cpu")
+    current_file_path = Path(__file__).resolve()  # 获取当前文件的绝对路径
+    tuc_path = current_file_path.parents[5]  # 获取项目根目录文件路径
+    model_path = tuc_path / "largeFiles" / "model_saved"  # 获取数据集路径
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cpu")
 
     data_transform = transforms.Compose(
         [transforms.Resize((224, 224)),
@@ -40,7 +44,7 @@ def main():
     model = AlexNet(num_classes=5).to(device)
 
     # load model weights
-    weights_path = "../workspace/AlexNet_2024-04-07.pth"
+    weights_path = model_path / "AlexNet_2024-04-11.pth"
     assert os.path.exists(weights_path), "file: '{}' dose not exist.".format(weights_path)
     model.load_state_dict(torch.load(weights_path))
 
@@ -59,7 +63,6 @@ def main():
                                                   predict[i].numpy()))
     # plt.show()
     
-
 
 if __name__ == '__main__':
     main()

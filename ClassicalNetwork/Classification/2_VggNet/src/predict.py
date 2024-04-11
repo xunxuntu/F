@@ -5,11 +5,15 @@ import torch
 from PIL import Image
 from torchvision import transforms
 import matplotlib.pyplot as plt
-
 from model import vgg
+from pathlib import Path
 
 
 def main():
+    current_file_path = Path(__file__).resolve()  # 获取当前文件的绝对路径
+    tuc_path = current_file_path.parents[5]  # 获取项目根目录文件路径
+    model_path = tuc_path / "largeFiles" / "model_saved"  # 获取数据集路径
+
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f'device: {device}')
 
@@ -38,7 +42,7 @@ def main():
     # create model
     model = vgg(model_name="vgg16", num_classes=5).to(device)
     # load model weights
-    weights_path = "../workspace/vgg16_Net_2024-04-07.pth"
+    weights_path = model_path / "VggNet_2024-04-11.pth"
     assert os.path.exists(weights_path), "file: '{}' dose not exist.".format(weights_path)
     model.load_state_dict(torch.load(weights_path, map_location=device), strict=False)
 
